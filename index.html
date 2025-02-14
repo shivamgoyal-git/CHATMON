@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CHAT BOT</title>
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="chatbot-popup">
+      <!-- chatbot header -->
+      <div class="chat-header">
+        <div class="header-info">
+          <img
+            src="/assets/chatmon-logo.svg"
+            alt="chatmon-logo"
+            style="
+              height: 35px;
+              border: 0.5px solid #0e5f6d;
+              border-radius: 50%;
+            "
+          />
+          <h2 class="logo-text">Chatmon</h2>
+        </div>
+        <button class="material-symbols-rounded">keyboard_arrow_down</button>
+      </div>
+      <!-- chatbot body -->
+      <div class="chat-body">
+        <div class="message bot-message">
+          <img
+            src="/assets/chatmon-logo.svg"
+            alt="chatmon-logo"
+            style="
+              height: 35px;
+              border: 0.5px solid #0e5f6d;
+              border-radius: 50%;
+            "
+          />
+          <div class="message-text">
+            Hey there. <br />How can I help you today?
+          </div>
+        </div>
+        <div class="message user-message">
+          <div class="message-text">Lorem ipsum dolor sit amet.</div>
+        </div>
+        <div class="message bot-message">
+          <img
+            src="/assets/chatmon-logo.svg"
+            alt="chatmon-logo"
+            style="
+              height: 35px;
+              border: 0.5px solid #0e5f6d;
+              border-radius: 50%;
+            "
+          />
+          <div class="message-text">
+           <div class="thinking-indicator">
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+           </div>
+          </div>
+        </div>
+      </div>
+      <!-- chatbot footer -->
+      <div class="chat-footer">
+        <form action="#" class="chat-form">
+          <textarea placeholder="Message..." class="message-input"></textarea>
+          <div class="chat-controls">
+            <button type="button" class="material-symbols-rounded">
+              sentiment_satisfied
+            </button>
+            <button type="button" class="material-symbols-rounded">
+              attach_file
+            </button>
+            <button type="submit" class="material-symbols-rounded">
+              arrow_upward
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+    <script src="script.js"></script>
+  </body>
+</html>
