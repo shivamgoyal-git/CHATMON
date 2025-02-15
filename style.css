@@ -86,7 +86,7 @@ body {
   color: #073239;
   background-color: #70d2b82d;
   padding: 12px 16px;
-  border-radius: 10px 10px 10px 0px;
+  border-radius: 16px 16px 16px 0px;
 }
 
 .user-message {
@@ -94,7 +94,7 @@ body {
   color: #ffffff;
   margin-left: auto;
   padding: 12px 16px;
-  border-radius: 10px 10px 0px 10px;
+  border-radius: 16px 16px 0px 16px;
 }
 .bot-message .message-text .thinking-indicator .dot {
   height: 7px;
@@ -151,10 +151,10 @@ body {
   width: 100%;
   border: 1px solid #ddd;
   border-radius: 32px;
-  padding: 10px 0px 12px 15px;
+  /* padding: 10px 0px 12px 15px; */
   height: 47px;
   font-size: 0.95rem;
-  padding: 14px 0px 13px 18px;
+  padding: 14px 100px 13px 18px;
   resize: none;
 }
 
@@ -180,6 +180,22 @@ body {
   padding: 5px;
   border-radius: 50%;
   transition: all 0.3s;
+}
+
+.chat-controls #send-message{
+  background-color: #11b88b;
+  color: #ffffff;
+}
+.chat-controls #send-message{
+  background-color: #11b88b;
+  color: #ffffff;
+  display: none;
+}
+.message-input:valid~.chat-controls  #send-message{
+  display: block;
+}
+.chat-controls #send-message:hover{
+  background-color: #0e9e77;
 }
 
 .chat-controls button:hover {
