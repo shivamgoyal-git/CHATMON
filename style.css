@@ -71,6 +71,8 @@ body {
   flex-direction: column;
   gap: 15px;
   background-color: #fff;
+  scrollbar-width: thin;
+  scrollbar-color: #70d2b854 transparent;
 }
 
 .message {

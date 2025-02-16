@@ -43,6 +43,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
             } catch (error) {
                 console.log(error)
+                messageElement.textContent = `Something went wrong. Please try again.`    
+                messageElement.style.color =  "red"   
+
+            }finally {
+                chatBody.scrollTo({top: chatBody.scrollHeight, behavior: "smooth"})
             }
 
         }
@@ -70,6 +75,8 @@ document.addEventListener("DOMContentLoaded", () => {
         </div>`;
         const incommingMessageDiv = createMessageDiv(messageContent, "bot-message");
         chatBody.appendChild(incommingMessageDiv);
+        chatBody.scrollTo({top: chatBody.scrollHeight, behavior: "smooth"})
+
 
         // Call the generateBotResponse function
         generateBotResponse(incommingMessageDiv)
@@ -84,6 +91,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const outgoingMessageDiv = createMessageDiv(messageContent, "user-message");
         outgoingMessageDiv.querySelector(".message-text").textContent = userData.message;
         chatBody.appendChild(outgoingMessageDiv);
+        chatBody.scrollTo({top: chatBody.scrollHeight, behavior: "smooth"})
 
         setTimeout(() => {
             handleIncommingMessage()
