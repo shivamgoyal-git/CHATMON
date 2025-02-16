@@ -67,14 +67,14 @@ body {
   padding: 20px;
   height: 460px;
   overflow-y: auto;
-  display: flex;
+    display: flex;
   flex-direction: column;
   gap: 15px;
   background-color: #fff;
 }
 
 .message {
-  max-width: 90%;
+  max-width: 89%;
 }
 
 .bot-message {

@@ -4,18 +4,52 @@ document.addEventListener("DOMContentLoaded", () => {
     const chatBody = document.querySelector(".chat-body");
     const sendMessageButton = document.querySelector("#send-message");
 
-    let userData = {
-        message : null
-    }
+    // Api setup
+    const API_KEY = "AIzaSyDm2eRCk9qr_qdxXI3JvL8nMdqRozN-sPI"
+    const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`;
 
-    function createMessageDiv(content ,classes) {
+    let userData = {
+        message: null
+    }
+    function createMessageDiv(content, classes) {
         const div = document.createElement('div')
         div.classList.add("message", classes)
         div.innerHTML = content
         return div
     }
 
-    function handleIncommingMessage (){
+    const  generateBotResponse = async (incommingMessageDiv) => {
+
+            const messageElement = incommingMessageDiv.querySelector(".message-text")
+
+            const requestOptions = {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    contents: [{
+                        parts: [{ text: userData.message }]
+                    }]
+                })
+            }
+
+            try {
+                const response = await fetch(API_URL, requestOptions)
+                const data = await response.json()
+                if (!response.ok) throw new Error(data.error.message)
+
+                const apiResponseText = data.candidates[0].content.parts[0].text.replace(/\*\*(.*?)\*\*/g,"$1").trim()
+                messageElement.textContent = apiResponseText    
+
+
+            } catch (error) {
+                console.log(error)
+            }
+
+        }
+
+    
+
+    function handleIncommingMessage() {
         const messageContent = `<div class="message bot-message">
           <img
             src="/assets/chatmon-logo.svg"
@@ -37,9 +71,12 @@ document.addEventListener("DOMContentLoaded", () => {
         const incommingMessageDiv = createMessageDiv(messageContent, "bot-message");
         chatBody.appendChild(incommingMessageDiv);
 
+        // Call the generateBotResponse function
+        generateBotResponse(incommingMessageDiv)
+
     }
 
-    function handleOutgoingMessage (e) {
+    function handleOutgoingMessage(e) {
         e.preventDefault()
         userData.message = messageInput.value.trim()
         messageInput.value = ""
@@ -48,8 +85,8 @@ document.addEventListener("DOMContentLoaded", () => {
         outgoingMessageDiv.querySelector(".message-text").textContent = userData.message;
         chatBody.appendChild(outgoingMessageDiv);
 
-        setTimeout(()=>{
-        handleIncommingMessage()
+        setTimeout(() => {
+            handleIncommingMessage()
         }, 600)
     }
 
@@ -62,7 +99,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     })
 
-    sendMessageButton.addEventListener("click",(e)=>{
+    sendMessageButton.addEventListener("click", (e) => {
         handleOutgoingMessage(e)
     })
 
