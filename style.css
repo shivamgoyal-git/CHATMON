@@ -67,12 +67,18 @@ body {
   padding: 20px;
   height: 460px;
   overflow-y: auto;
-    display: flex;
+  display: flex;
   flex-direction: column;
   gap: 15px;
   background-color: #fff;
   scrollbar-width: thin;
   scrollbar-color: #70d2b854 transparent;
+}
+.chat-body .attachment {
+  width: 50%;
+  margin-top: 5px;
+  border-radius: 16px 0px 16px 16px;
+  align-items: end;
 }
 
 .message {
@@ -92,12 +98,24 @@ body {
 }
 
 .user-message {
+  /* background-color: #11b88b; */
+  color: #ffffff;
+  margin-left: auto;
+  padding: 12px 16px;
+  border-radius: 16px 16px 0px 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: end;
+}
+.user-message .message-text {
   background-color: #11b88b;
   color: #ffffff;
   margin-left: auto;
   padding: 12px 16px;
   border-radius: 16px 16px 0px 16px;
+  display: flex;
 }
+
 .bot-message .message-text .thinking-indicator .dot {
   height: 7px;
   width: 7px;
@@ -163,7 +181,7 @@ body {
 .message-input:focus {
   outline: none;
   border-color: #11b88b;
-  box-shadow: 0 0 4px 2px #11b88b
+  box-shadow: 0 0 4px 2px #11b88b;
 }
 
 .chat-controls {
@@ -175,7 +193,7 @@ body {
 }
 
 .chat-controls button {
-  background : none;
+  background: none;
   border: none;
   cursor: pointer;
   color: #07323996;
@@ -184,25 +202,56 @@ body {
   transition: all 0.3s;
 }
 
-.chat-controls #send-message{
+.chat-controls #send-message {
   background-color: #11b88b;
   color: #ffffff;
 }
-.chat-controls #send-message{
+.chat-controls #send-message {
   background-color: #11b88b;
   color: #ffffff;
   display: none;
 }
-.message-input:valid~.chat-controls  #send-message{
+.message-input:valid ~ .chat-controls #send-message {
   display: block;
 }
-.chat-controls #send-message:hover{
+.chat-controls #send-message:hover {
   background-color: #0e9e77;
 }
 
 .chat-controls button:hover {
   background-color: #70d2b82d;
   color: #073239bf;
+}
+
+.chat-controls .file-upload-wrapper {
+  height: 35px;
+  width: 35px;
+  position: relative;
+}
+
+.chat-form .file-upload-wrapper :where(img, button) {
+  position: absolute;
+}
+
+.chat-controls .file-upload-wrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
+.chat-form .file-upload-wrapper #file-cancle {
+  color: red;
+  background: white;
+}
+
+.chat-form .file-upload-wrapper :where(#file-cancle, img),
+.chat-form .file-upload-wrapper.file-uploaded #file-upload {
+  display: none;
+}
+
+.chat-form .file-upload-wrapper.file-uploaded img,
+.chat-form .file-upload-wrapper.file-uploaded:hover #file-cancle {
+  display: block;
 }
 
 /* Responsive Design */

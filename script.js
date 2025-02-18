@@ -3,13 +3,21 @@ document.addEventListener("DOMContentLoaded", () => {
     const messageInput = document.querySelector(".message-input");
     const chatBody = document.querySelector(".chat-body");
     const sendMessageButton = document.querySelector("#send-message");
+    const fileInput = document.querySelector("#file-input");
+    const fileUploadWrapper = document.querySelector(".file-upload-wrapper");
+    const fileCancleButton = document.querySelector("#file-cancle");
+    
 
     // Api setup
     const API_KEY = "AIzaSyDm2eRCk9qr_qdxXI3JvL8nMdqRozN-sPI"
     const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`;
 
     let userData = {
-        message: null
+        message: null,
+        file: {
+            data: null,
+            mime_type: null
+        }
     }
     function createMessageDiv(content, classes) {
         const div = document.createElement('div')
@@ -18,41 +26,42 @@ document.addEventListener("DOMContentLoaded", () => {
         return div
     }
 
-    const  generateBotResponse = async (incommingMessageDiv) => {
+    const generateBotResponse = async (incommingMessageDiv) => {
 
-            const messageElement = incommingMessageDiv.querySelector(".message-text")
+        const messageElement = incommingMessageDiv.querySelector(".message-text")
 
-            const requestOptions = {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    contents: [{
-                        parts: [{ text: userData.message }]
-                    }]
-                })
-            }
-
-            try {
-                const response = await fetch(API_URL, requestOptions)
-                const data = await response.json()
-                if (!response.ok) throw new Error(data.error.message)
-
-                const apiResponseText = data.candidates[0].content.parts[0].text.replace(/\*\*(.*?)\*\*/g,"$1").trim()
-                messageElement.textContent = apiResponseText    
-
-
-            } catch (error) {
-                console.log(error)
-                messageElement.textContent = `Something went wrong. Please try again.`    
-                messageElement.style.color =  "red"   
-
-            }finally {
-                chatBody.scrollTo({top: chatBody.scrollHeight, behavior: "smooth"})
-            }
-
+        const requestOptions = {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                contents: [{
+                    parts: [{ text: userData.message }, (userData.file.data ? [{inline_data : userData.file}] : [])]
+                }]
+            })
         }
 
-    
+        try {
+            const response = await fetch(API_URL, requestOptions)
+            const data = await response.json()
+            if (!response.ok) throw new Error(data.error.message)
+
+            const apiResponseText = data.candidates[0].content.parts[0].text.replace(/\*\*(.*?)\*\*/g, "$1").trim()
+            messageElement.textContent = apiResponseText
+
+
+        } catch (error) {
+            console.log(error)
+            messageElement.textContent = `Something went wrong. Please try again.`
+            messageElement.style.color = "red"
+
+        } finally {
+            userData.file = {}
+            chatBody.scrollTo({ top: chatBody.scrollHeight, behavior: "smooth" })
+        }
+
+    }
+
+
 
     function handleIncommingMessage() {
         const messageContent = `<div class="message bot-message">
@@ -75,7 +84,7 @@ document.addEventListener("DOMContentLoaded", () => {
         </div>`;
         const incommingMessageDiv = createMessageDiv(messageContent, "bot-message");
         chatBody.appendChild(incommingMessageDiv);
-        chatBody.scrollTo({top: chatBody.scrollHeight, behavior: "smooth"})
+        chatBody.scrollTo({ top: chatBody.scrollHeight, behavior: "smooth" })
 
 
         // Call the generateBotResponse function
@@ -87,11 +96,15 @@ document.addEventListener("DOMContentLoaded", () => {
         e.preventDefault()
         userData.message = messageInput.value.trim()
         messageInput.value = ""
-        const messageContent = `<div class="message-text"></div>`;
+        fileUploadWrapper.classList.remove("file-uploaded");
+
+        const messageContent = `<div class="message-text"></div>
+                               ${userData.file.data ? `<img src ="data:${userData.file.mime_type};base64,${userData.file.data}" class = "attachment" />`: ""}`;
+
         const outgoingMessageDiv = createMessageDiv(messageContent, "user-message");
         outgoingMessageDiv.querySelector(".message-text").textContent = userData.message;
         chatBody.appendChild(outgoingMessageDiv);
-        chatBody.scrollTo({top: chatBody.scrollHeight, behavior: "smooth"})
+        chatBody.scrollTo({ top: chatBody.scrollHeight, behavior: "smooth" })
 
         setTimeout(() => {
             handleIncommingMessage()
@@ -109,6 +122,38 @@ document.addEventListener("DOMContentLoaded", () => {
 
     sendMessageButton.addEventListener("click", (e) => {
         handleOutgoingMessage(e)
+    })
+
+
+    fileInput.addEventListener("change", () => {
+        const file = fileInput.files[0]
+        if (!file) return;
+
+        const reader = new FileReader()
+        reader.onload = (e) => {
+            fileUploadWrapper.querySelector("img").src = e.target.result;
+            fileUploadWrapper.classList.add("file-uploaded");
+            const base64String = e.target.result.split(",")[1];
+            
+            //store file data in user data
+            userData.file = {
+                data: base64String,
+                mime_type: file.type
+            }
+            console.log(userData.file) 
+            fileInput.value = ""
+        }
+
+        reader.readAsDataURL(file)
+    })
+
+    fileCancleButton.addEventListener("click", ()=>{
+        userData.file = {}
+        fileUploadWrapper.classList.remove("file-uploaded");
+    })
+
+    document.querySelector("#file-upload").addEventListener("click", () => {
+        fileInput.click()
     })
 
 
