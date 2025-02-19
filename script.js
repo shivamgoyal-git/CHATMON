@@ -6,7 +6,9 @@ document.addEventListener("DOMContentLoaded", () => {
     const fileInput = document.querySelector("#file-input");
     const fileUploadWrapper = document.querySelector(".file-upload-wrapper");
     const fileCancleButton = document.querySelector("#file-cancle");
-    
+    const chatbotToggler = document.querySelector("#chatbot-toggler");
+    const closeChatbot = document.querySelector("#close-chatbot");
+
 
     // Api setup
     const API_KEY = "AIzaSyDm2eRCk9qr_qdxXI3JvL8nMdqRozN-sPI"
@@ -19,6 +21,8 @@ document.addEventListener("DOMContentLoaded", () => {
             mime_type: null
         }
     }
+    const initialInputHeight = messageInput.scrollHeight;
+
     function createMessageDiv(content, classes) {
         const div = document.createElement('div')
         div.classList.add("message", classes)
@@ -35,7 +39,7 @@ document.addEventListener("DOMContentLoaded", () => {
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
                 contents: [{
-                    parts: [{ text: userData.message }, (userData.file.data ? [{inline_data : userData.file}] : [])]
+                    parts: [{ text: userData.message }, (userData.file.data ? [{ inline_data: userData.file }] : [])]
                 }]
             })
         }
@@ -87,19 +91,22 @@ document.addEventListener("DOMContentLoaded", () => {
         chatBody.scrollTo({ top: chatBody.scrollHeight, behavior: "smooth" })
 
 
-        // Call the generateBotResponse function
+        // Call the generateBotR esponse function
         generateBotResponse(incommingMessageDiv)
 
     }
-
+//handle outgoing user message
     function handleOutgoingMessage(e) {
         e.preventDefault()
         userData.message = messageInput.value.trim()
         messageInput.value = ""
         fileUploadWrapper.classList.remove("file-uploaded");
+        messageInput.dispatchEvent(new Event("input"))  
 
+
+        //create and display user message
         const messageContent = `<div class="message-text"></div>
-                               ${userData.file.data ? `<img src ="data:${userData.file.mime_type};base64,${userData.file.data}" class = "attachment" />`: ""}`;
+                               ${userData.file.data ? `<img src ="data:${userData.file.mime_type};base64,${userData.file.data}" class = "attachment" />` : ""}`;
 
         const outgoingMessageDiv = createMessageDiv(messageContent, "user-message");
         outgoingMessageDiv.querySelector(".message-text").textContent = userData.message;
@@ -115,10 +122,19 @@ document.addEventListener("DOMContentLoaded", () => {
 
     messageInput.addEventListener("keydown", (e) => {
         const userMessage = e.target.value.trim()
-        if (e.key === 'Enter' && userMessage) {
+        if (e.key === 'Enter' && userMessage && !e.shiftKey && window.innerWidth >768) {
             handleOutgoingMessage(e)
         }
     })
+
+// adjust input height dynamically
+    messageInput.addEventListener("input", () =>{
+        messageInput.style.height = `${initialInputHeight}px`;
+        messageInput.style.height = `${messageInput.scrollHeight}px`;
+        document.querySelector(".message-input").style.borderRadius = messageInput.scrollHeight > initialInputHeight ? "16px" : "32px"
+
+    } )
+
 
     sendMessageButton.addEventListener("click", (e) => {
         handleOutgoingMessage(e)
@@ -134,20 +150,20 @@ document.addEventListener("DOMContentLoaded", () => {
             fileUploadWrapper.querySelector("img").src = e.target.result;
             fileUploadWrapper.classList.add("file-uploaded");
             const base64String = e.target.result.split(",")[1];
-            
+
             //store file data in user data
             userData.file = {
                 data: base64String,
                 mime_type: file.type
             }
-            console.log(userData.file) 
+            console.log(userData.file)
             fileInput.value = ""
         }
 
         reader.readAsDataURL(file)
     })
 
-    fileCancleButton.addEventListener("click", ()=>{
+    fileCancleButton.addEventListener("click", () => {
         userData.file = {}
         fileUploadWrapper.classList.remove("file-uploaded");
     })
@@ -155,6 +171,38 @@ document.addEventListener("DOMContentLoaded", () => {
     document.querySelector("#file-upload").addEventListener("click", () => {
         fileInput.click()
     })
+
+
+    const picker = new EmojiMart.Picker({
+        theme: "light",
+        skinTonePosition: "none",
+        previewPosition: "none",
+        onEmojiSelect: (emoji) => {
+            const { selectionStart: start, selectionEnd: end } = messageInput;
+            messageInput.setRangeText(emoji.native, start, end, "end");
+            messageInput.focus();
+
+        },
+        onClickOutside: (e) => {
+            if (e.target.id === "emoji-picker") {
+                document.body.classList.toggle("show-emoji-picker")
+            }
+            else {
+                document.body.classList.remove("show-emoji-picker")
+
+            }
+        }
+    })
+
+    document.querySelector(".chat-form").appendChild(picker);
+
+
+    //toggle chatbot
+    chatbotToggler.addEventListener("click",()=> document.body.classList.toggle("show-chatbot")) 
+
+    //close chatbot
+    closeChatbot.addEventListener("click",()=> document.body.classList.remove("show-chatbot"))
+
 
 
 
