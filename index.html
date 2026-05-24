@@ -108,8 +108,6 @@
             <span class="user-name" id="user-name">Shivam Goyal</span>
             <span class="user-plan" id="user-plan">Free plan</span>
           </div>
-          <button class="icon-btn material-symbols-rounded" id="settings-btn" title="API Settings"
-            aria-label="API Settings">settings</button>
           <button class="icon-btn material-symbols-rounded" id="logout-btn" title="Log out"
             aria-label="Log out">logout</button>
         </div>
@@ -212,40 +210,6 @@
 
   <!-- Mobile sidebar overlay -->
   <div class="sidebar-overlay" id="sidebar-overlay"></div>
-
-  <!-- ── Settings / API Key Modal ── -->
-  <div class="settings-modal" id="settings-modal" style="display: none;">
-    <div class="settings-card">
-      <div class="settings-header">
-        <h3 class="settings-title">
-          <span class="material-symbols-rounded">settings</span>
-          API Configuration
-        </h3>
-        <button id="close-settings" class="icon-btn material-symbols-rounded" title="Close" aria-label="Close settings">close</button>
-      </div>
-      <div class="settings-body">
-        <p class="settings-desc">Google automatically revokes API keys pushed to public GitHub repositories to protect security. Paste your own private API key below to enable chat capabilities.</p>
-        
-        <div class="input-group">
-          <label for="user-api-key">Gemini API Key</label>
-          <input type="password" id="user-api-key" placeholder="AIzaSy..." />
-        </div>
-        
-        <div class="api-instructions">
-          <h4>How to get a free API Key?</h4>
-          <ol>
-            <li>Go to <a href="https://aistudio.google.com/" target="_blank" rel="noopener noreferrer">Google AI Studio</a>.</li>
-            <li>Click <strong>"Get API key"</strong>.</li>
-            <li>Create a new key (completely free) and copy it.</li>
-            <li>Paste it above and click Save!</li>
-          </ol>
-        </div>
-      </div>
-      <div class="settings-footer">
-        <button id="save-settings" class="settings-save-btn">Save Configuration</button>
-      </div>
-    </div>
-  </div>
 
   <!-- Scripts -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
