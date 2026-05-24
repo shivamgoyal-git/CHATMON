@@ -1,90 +1,222 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>CHAT BOT</title>
-    <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0"
-    />
-    
-    <link rel="stylesheet" href="style.css" />
-  </head>
-  <body>
 
-  <button id="chatbot-toggler">
-    <img src="/assets/chat_bubble_24dp_E8EAED.svg" alt="chat">
-    <span class="material-symbols-rounded">close</span>
-  </button>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description"
+    content="Chatmon – Your intelligent AI assistant powered by Gemini. Ask anything, get instant answers." />
+  <title>Chatmon – AI Assistant</title>
 
-    <div class="chatbot-popup">
-      <!-- chatbot header -->
-      <div class="chat-header">
-        <div class="header-info">
-          <img
-            src="/assets/chatmon-logo.svg"
-            alt="chatmon-logo"
-            style="
-              height: 35px;
-              border: 0.5px solid #0e5f6d;
-              border-radius: 50%;
-            "
-          />
-          <h2 class="logo-text">Chatmon</h2>
-        </div>
-        <button id="close-chatbot" class="material-symbols-rounded">keyboard_arrow_down</button>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0"
+    rel="stylesheet" />
+
+  <!-- Highlight.js for code blocks -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css" />
+
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+
+  <!-- ── Authentication Overlay ── -->
+  <div class="auth-overlay" id="auth-overlay">
+    <div class="auth-card">
+      <div class="auth-header">
+        <img src="/assets/chatmon-logo.svg" alt="Chatmon Logo" class="auth-logo" />
+        <h2 class="auth-title">Welcome to Chatmon</h2>
+        <p class="auth-subtitle" id="auth-subtitle-text">Log in to your account to continue</p>
       </div>
-      <!-- chatbot body -->
-      <div class="chat-body">
-        <div class="message bot-message">
-          <img
-            src="/assets/chatmon-logo.svg"
-            alt="chatmon-logo"
-            style="
-              height: 35px;
-              border: 0.5px solid #0e5f6d;
-              border-radius: 50%;
-            "
-          />
-          <div class="message-text">
-            Hey there. <br />How can I help you today?
+
+      <!-- Login Form -->
+      <form id="login-form" class="auth-form-el active">
+        <div class="input-group">
+          <label for="login-email">Email or Username</label>
+          <input type="text" id="login-email" required placeholder="you@example.com or username" />
+        </div>
+        <div class="input-group">
+          <label for="login-password">Password</label>
+          <input type="password" id="login-password" required placeholder="••••••••" />
+        </div>
+        <div class="auth-error-msg" id="login-error"></div>
+        <button type="submit" class="auth-submit-btn">Sign In</button>
+        <p class="auth-switch-text">Don't have an account? <button type="button" id="switch-to-signup"
+            class="switch-link-btn">Sign Up</button></p>
+      </form>
+
+      <!-- Signup Form -->
+      <form id="signup-form" class="auth-form-el">
+        <div class="input-group">
+          <label for="signup-name">Full Name</label>
+          <input type="text" id="signup-name" required placeholder="Shivam Goyal" />
+        </div>
+        <div class="input-group">
+          <label for="signup-email">Email Address</label>
+          <input type="email" id="signup-email" required placeholder="you@example.com" />
+        </div>
+        <div class="input-group">
+          <label for="signup-password">Password</label>
+          <input type="password" id="signup-password" required placeholder="Min. 6 characters" minlength="6" />
+        </div>
+        <div class="auth-error-msg" id="signup-error"></div>
+        <button type="submit" class="auth-submit-btn">Create Account</button>
+        <p class="auth-switch-text">Already have an account? <button type="button" id="switch-to-login"
+            class="switch-link-btn">Log In</button></p>
+      </form>
+
+      <div class="auth-divider">
+        <span>or</span>
+      </div>
+
+      <button type="button" id="guest-login-btn" class="auth-guest-btn">
+        <span class="material-symbols-rounded">person_outline</span>
+        Continue as Guest
+      </button>
+    </div>
+  </div>
+
+  <!-- ── Main Application Layout ── -->
+  <div class="app-layout" id="app-layout" style="display: none;">
+
+    <!-- ── Sidebar ── -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="brand">
+          <img src="/assets/chatmon-logo.svg" alt="Chatmon logo" class="brand-logo" />
+          <span class="brand-name">Chatmon</span>
+        </div>
+      </div>
+
+      <button id="new-chat-btn" class="new-chat-btn">
+        <span class="material-symbols-rounded">add</span>
+        New Chat
+      </button>
+
+      <div class="sidebar-section-label">Recent</div>
+      <nav class="chat-history" id="chat-history">
+        <!-- Populated dynamically -->
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="user-profile">
+          <div class="user-avatar" id="user-avatar">S</div>
+          <div class="user-info">
+            <span class="user-name" id="user-name">Shivam Goyal</span>
+            <span class="user-plan" id="user-plan">Free plan</span>
+          </div>
+          <button class="icon-btn material-symbols-rounded" id="logout-btn" title="Log out"
+            aria-label="Log out">logout</button>
+        </div>
+      </div>
+    </aside>
+
+    <!-- ── Main Chat Area ── -->
+    <main class="chat-main">
+
+      <header class="topbar">
+        <button id="mobile-sidebar-toggle" class="icon-btn material-symbols-rounded"
+          aria-label="Open sidebar">menu</button>
+        <button id="desktop-sidebar-toggle" class="icon-btn material-symbols-rounded" title="Toggle sidebar"
+          aria-label="Toggle sidebar">side_navigation</button>
+        <div class="topbar-center">
+          <span class="model-badge">
+            <span class="material-symbols-rounded">auto_awesome</span>
+            Gemini 2.5 Flash
+          </span>
+        </div>
+        <div class="topbar-actions">
+          <button id="theme-toggle" class="icon-btn material-symbols-rounded" title="Toggle theme"
+            aria-label="Toggle theme">dark_mode</button>
+          <button id="clear-chat" class="icon-btn material-symbols-rounded" title="Clear chat"
+            aria-label="Clear chat">delete_sweep</button>
+        </div>
+      </header>
+
+      <!-- Chat body -->
+      <div class="chat-body" id="chat-body">
+
+        <!-- Welcome screen (shown when no messages) -->
+        <div class="welcome-screen" id="welcome-screen">
+          <div class="welcome-avatar">
+            <img src="/assets/chatmon-logo.svg" alt="Chatmon" />
+            <span class="status-dot"></span>
+          </div>
+          <h1 class="welcome-title" id="welcome-title-text">Hello, Shivam 👋</h1>
+          <p class="welcome-subtitle">I'm <strong>Chatmon</strong>, your AI assistant. Ask me anything — I'm here to
+            help.</p>
+
+          <div class="suggestion-grid">
+            <button class="suggestion-card" data-prompt="What can you help me with?">
+              <span class="material-symbols-rounded">help</span>
+              <span>What can you help me with?</span>
+            </button>
+            <button class="suggestion-card"
+              data-prompt="Write me a Python function to sort a list of dictionaries by a key">
+              <span class="material-symbols-rounded">code</span>
+              <span>Write a Python function</span>
+            </button>
+            <button class="suggestion-card" data-prompt="Tell me an interesting fact about space">
+              <span class="material-symbols-rounded">rocket_launch</span>
+              <span>Space fact</span>
+            </button>
+            <button class="suggestion-card" data-prompt="Help me draft a professional email">
+              <span class="material-symbols-rounded">mail</span>
+              <span>Draft a professional email</span>
+            </button>
           </div>
         </div>
 
+        <!-- Messages render here -->
       </div>
-      <!-- chatbot footer -->
-      <div class="chat-footer">
-        <form action="#" class="chat-form">
-          <textarea
-            placeholder="Message..."
-            class="message-input"
-            required
-          ></textarea>
-          <div class="chat-controls">
-            <button type="button" id="emoji-picker" class="material-symbols-rounded">
-              sentiment_satisfied
-            </button>
-            <div class="file-upload-wrapper">
-              <input type="file" accept="images/*" id="file-input" hidden>
-              <img src="#" >
-              <button type="button" id="file-upload" class="material-symbols-rounded">attach_file</button>
-              <button type="button" id="file-cancle" class="material-symbols-rounded">close</button>
+
+      <!-- Chat footer / input -->
+      <footer class="chat-footer">
+        <form action="#" class="chat-form" id="chat-form">
+          <div class="input-shell">
+            <!-- Image preview strip (shows when file attached) -->
+            <div class="file-preview-strip" id="file-preview-strip">
+              <div class="file-preview-inner">
+                <img id="file-preview" src="#" alt="Attachment preview" />
+                <button type="button" id="file-cancel" class="icon-btn material-symbols-rounded remove-file-btn"
+                  title="Remove" aria-label="Remove file">close</button>
+              </div>
             </div>
-            
-            <button
-              type="submit"
-              id="send-message"
-              class="material-symbols-rounded"
-            >
-              arrow_upward
-            </button>
+
+            <div class="input-row">
+              <button type="button" id="file-upload" class="icon-btn material-symbols-rounded attach-btn"
+                title="Attach image" aria-label="Attach image">attach_file</button>
+              <input type="file" accept="image/*" id="file-input" hidden />
+
+              <textarea id="message-input" placeholder="Message Chatmon…" class="message-input" rows="1" required
+                aria-label="Chat message input"></textarea>
+
+              <div class="input-actions">
+                <button type="button" id="emoji-picker" class="icon-btn material-symbols-rounded" title="Emoji"
+                  aria-label="Emoji picker">sentiment_satisfied</button>
+                <button type="submit" id="send-message" class="send-btn" title="Send" aria-label="Send message">
+                  <span class="material-symbols-rounded">arrow_upward</span>
+                </button>
+              </div>
+            </div>
           </div>
         </form>
-      </div>
-    </div>
+        <p class="footer-note">Chatmon may make mistakes. Verify important info.</p>
+      </footer>
 
-    <script src="https://cdn.jsdelivr.net/npm/emoji-mart@latest/dist/browser.js"></script>
-    <script src="script.js"></script>
-  </body>
+    </main>
+  </div>
+
+  <!-- Mobile sidebar overlay -->
+  <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+  <!-- Scripts -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/emoji-mart@latest/dist/browser.js"></script>
+  <script src="script.js"></script>
+</body>
+
 </html>
