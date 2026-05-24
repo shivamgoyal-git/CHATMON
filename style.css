@@ -1434,8 +1434,3 @@ body.show-emoji-picker em-emoji-picker {
 .settings-save-btn:active {
   transform: translateY(0);
 }
-
-/* Light Theme overrides for modal */
-body.light-theme .settings-card {
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
-}
