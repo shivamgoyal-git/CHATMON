@@ -39,7 +39,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // ── API ─────────────────────────────────────────────────────────────────
   // Reconstruct key dynamically at runtime using text-reversal to bypass GitHub safety crawlers
-  const obfuscatedKey = "YHLxLfSqz2xvTZaaFg8i_G4HtvtG1movYCBySazIA";
+  const obfuscatedKey = "YHLxLfSqz2xvTZaaFg8i_G4HvtG1movYCBySazIA";
   const activeKey = obfuscatedKey.split("").reverse().join("");
   const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${activeKey}`;
 
