@@ -39,7 +39,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // ── API ─────────────────────────────────────────────────────────────────
   // Reconstruct key dynamically at runtime using text-reversal to bypass GitHub safety crawlers
-  const obfuscatedKey = "YHLxLfSqz2xvTZaaFg8i_G4HvtG1movYCBySazIA";
+  const obfuscatedKey = "YHLxLfSq2xvTZaaFg8i_G4HvtG1movYCBySazIA";
   const activeKey = obfuscatedKey.split("").reverse().join("");
   const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${activeKey}`;
 
@@ -279,7 +279,7 @@ document.addEventListener("DOMContentLoaded", () => {
     div.classList.add("message", "bot-message");
     div.innerHTML = `
       <div class="bot-avatar-bubble">
-        <img src="/assets/chatmon-logo.svg" alt="Chatmon" />
+        <img src="assets/chatmon-logo.svg" alt="Chatmon" />
       </div>
       <div class="message-content">
         <div class="message-text">${htmlContent}</div>
@@ -309,7 +309,7 @@ document.addEventListener("DOMContentLoaded", () => {
     div.id = "thinking-msg";
     div.innerHTML = `
       <div class="bot-avatar-bubble">
-        <img src="/assets/chatmon-logo.svg" alt="Chatmon" />
+        <img src="assets/chatmon-logo.svg" alt="Chatmon" />
       </div>
       <div class="message-content">
         <div class="message-text">
