@@ -35,13 +35,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const userNameEl = document.getElementById("user-name");
   const userPlanEl = document.getElementById("user-plan");
   const welcomeTitleText = document.getElementById("welcome-title-text");
-  const guestLoginBtn      = document.getElementById("guest-login-btn");
+  const guestLoginBtn = document.getElementById("guest-login-btn");
 
-  // ── API ─────────────────────────────────────────────────────────────────
-  // Reconstruct key dynamically at runtime using text-reversal to bypass GitHub safety crawlers
-  const obfuscatedKey = "YHLxLfSq2xvTZaaFg8i_G4HvtG1movYCBySazIA";
-  const activeKey = obfuscatedKey.split("").reverse().join("");
-  const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${activeKey}`;
+
 
   // ── State ────────────────────────────────────────────────────────────────
   let currentUser = null; // { name, email }
@@ -346,14 +342,28 @@ document.addEventListener("DOMContentLoaded", () => {
 
     conversationHistory.push({ role: "user", parts });
 
-    const response = await fetch(API_URL, {
+    const response = await fetch("/api/chat", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ contents: conversationHistory })
     });
 
-    const data = await response.json();
-    if (!response.ok) throw new Error(data.error?.message || `HTTP ${response.status}`);
+    let data;
+    const contentType = response.headers.get("content-type");
+    if (contentType && contentType.includes("application/json")) {
+      data = await response.json();
+    }
+
+    if (!response.ok) {
+      if (response.status === 404) {
+        throw new Error("Backend serverless function not found. Please ensure you are running the project using 'npx vercel dev' in your terminal instead of a static server like http-server or opening index.html directly.");
+      }
+      throw new Error(data?.error?.message || `HTTP ${response.status} Error`);
+    }
+
+    if (!data) {
+      throw new Error("Received empty or invalid response from the backend.");
+    }
 
     const rawText = data.candidates?.[0]?.content?.parts?.[0]?.text;
     if (!rawText) throw new Error("Empty response from API.");
